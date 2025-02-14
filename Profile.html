@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker Pro - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg-light: #f8f9fa;
+            --primary-bg-dark: #212529;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #343a40;
+            --text-color-light: #000000;
+            --text-color-dark: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        body.light-mode {
+            background-color: var(--primary-bg-light);
+            color: var(--text-color-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--primary-bg-dark);
+            color: var(--text-color-dark);
+        }
+
+        .card {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .card {
+            background-color: var(--card-bg-dark);
+            border: 1px solid var(--text-color-dark);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .profile-info {
+            flex-grow: 1;
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        /* Center Download Buttons */
+        .download-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .download-buttons button {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <div class="container">
+        <h1 class="text-center mb-4">Budget Tracker Pro</h1>
+
+        <div class="text-end mb-3">
+            <button id="toggleTheme" class="btn btn-sm btn-outline-secondary">Toggle Dark Mode</button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav nav-pills nav-fill mb-4">
+            <a class="nav-link" href="tra.html">Transaction Tracker</a>
+            <a class="nav-link" href="data.html">Data Visualization & Analytics</a>
+            <a class="nav-link active" href="profile.html">Profile</a>
+        </nav>
+
+        <!-- Personal Information Card -->
+        <div class="card mb-4">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <br>
+                
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value" id="displayName">Shah Dhairya</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value" id="displayPhone">7069276736</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value" id="displayEmail">1shahdhairya@gmail.com</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Address</div>
+                            <div class="info-value" id="displayAddress">Anand , anand </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="profileForm">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}"
+                                    title="Please enter 10 digits" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" id="address" rows="3" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveProfile">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="download-buttons">
+            <button class="btn btn-primary" id="downloadPdf">Download PDF</button>
+            <!-- <button class="btn btn-success" id="downloadExcel">Download Excel</button> -->
+        </div>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+
+            function loadUserProfile() {
+                const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+                return {
+                    fullName: profileData.fullName || 'Shah Dhairya',
+                    email: profileData.email || '1shahdhairya@gmail.com'
+                };
+            }
+
+            function loadTransactions() {
+                const savedData = localStorage.getItem('budgetTrackerData');
+                return savedData ? JSON.parse(savedData) : [];
+            }
+
+
+            document.getElementById('downloadExcel').addEventListener('click', () => {
+                const transactions = loadTransactions();
+                const user = loadUserProfile();
+
+                // Create Excel Data
+                const worksheetData = [
+                    ["User Information"],
+                    ["Full Name", user.fullName],
+                    ["Email", user.email],
+                    [],
+                    ["Transaction History"],
+                    ["Date", "Description", "Amount"],
+                    ...transactions.map(t => [t.date, t.description, `${t.amount.toFixed(2)}`])
+                ];
+
+                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+
+                XLSX.writeFile(workbook, "transactions.xlsx");
+            });
+
+            class ProfileManager {
+                constructor() {
+                    this.initialize();
+                }
+
+                initialize() {
+                    this.loadFromLocalStorage();
+                    this.setupEventListeners();
+                }
+
+                setupEventListeners() {
+                    document.getElementById('saveProfile').addEventListener('click', () => {
+                        this.savePersonalInfo();
+                    });
+
+
+
+                    document.getElementById('toggleTheme').addEventListener('click', () => {
+                        document.body.classList.toggle('dark-mode');
+                    });
+
+                    // Input validations
+                    document.getElementById('phone').addEventListener('input', (e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    });
+
+
+
+
+                }
+
+                loadFromLocalStorage() {
+                    const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+
+                    // Update display values
+                    document.getElementById('displayName').textContent = profileData.fullName || 'Shah Dhairya H.';
+                    document.getElementById('displayEmail').textContent = profileData.email || '1shahdhiarya@gmail.com';
+
+                    // Update form values
+                    Object.keys(profileData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = profileData[key];
+                    });
+                }
+
+                savePersonalInfo() {
+                    const data = {
+                        fullName: document.getElementById('fullName').value,
+                        phone: document.getElementById('phone').value,
+                        email: document.getElementById('email').value,
+                        address: document.getElementById('address').value
+                    };
+
+                    const profileData = { ...JSON.parse(localStorage.getItem('profileData') || '{}'), ...data };
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+
+                    // Update display values
+                    document.getElementById('displayName').textContent = data.fullName;
+                    document.getElementById('displayPhone').textContent = data.phone;
+                    document.getElementById('displayEmail').textContent = data.email;
+                    document.getElementById('displayAddress').textContent = data.address;
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                    modal.hide();
+
+                    alert('Profile updated successfully!');
+                }
+
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                new ProfileManager();
+            });
+        </script>
+
+        <script>
+            function loadUserProfile() {
+                const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+                return {
+                    fullName: profileData.fullName || 'Shah Dhiarya',
+                    email: profileData.email || '1shahdhairya@gmail.com'
+                };
+            }
+
+            function loadTransactions() {
+                const savedData = localStorage.getItem('budgetTrackerData');
+                return savedData ? JSON.parse(savedData) : [];
+            }
+
+            document.getElementById('downloadPdf').addEventListener('click', () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const user = loadUserProfile();
+                const transactions = loadTransactions();
+
+                // Add User Information
+                doc.setFontSize(16);
+                doc.text("Budget Tracker Report", 10, 10);
+                doc.setFontSize(12);
+                doc.text(`Full Name: ${user.fullName}`, 10, 20);
+                doc.text(`Email: ${user.email}`, 10, 30);
+                doc.text("Transaction History From Expense:", 10, 45);
+
+                // Prepare Table Headers & Data
+                const headers = [["Date", "Description", "Amount"]];
+                const rows = transactions.map(t => [t.date, t.description, `${t.amount.toFixed(2)}`]);
+
+                // Draw Table
+                doc.autoTable({
+                    startY: 50,
+                    head: headers,
+                    body: rows,
+                    theme: "grid"
+                });
+
+                doc.save("transactions.pdf");
+            });
+
+            document.getElementById('downloadExcel').addEventListener('click', () => {
+                const transactions = loadTransactions();
+                const user = loadUserProfile();
+
+                // Create Excel Data
+                const worksheetData = [
+                    ["Budget Tracker Report"],
+                    ["Full Name", user.fullName],
+                    ["Email", user.email],
+                    [],
+                    ["Transaction History"],
+                    ["Date", "Description", "Amount"],
+                    ...transactions.map(t => [t.date, t.description, `${t.amount.toFixed(2)}`])
+                ];
+
+                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+
+                XLSX.writeFile(workbook, "transactions.xlsx");
+            });
+        </script>
+
+        <!-- Include jsPDF & AutoTable Plugin -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+</body>
+
+</html>
